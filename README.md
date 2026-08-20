@@ -17,6 +17,17 @@ dinner. A naive tracker creates a debt entry per person per expense. But once
 you net everything out, it's very likely the whole group can settle up in
 just 1–2 transfers.
 
+## How this is different from Splitwise
+
+Splitwise has a "simplify debts" feature, but it's a black box buried in a
+much larger consumer app — you never see what it actually did for you.
+SplitSmart makes the algorithm's value visible: it renders the full
+**before/after debt graph** side by side — the tangled web of individual
+IOUs vs. the minimal settlement plan — so the reduction is something you
+see, not just a number you're told. It's a small, focused project where
+one algorithm is the entire point, implemented and tested from scratch
+rather than called as a library feature.
+
 ## The algorithm
 
 1. **Collapse to net balances.** For each person, `net = amount_paid - fair_share`.
@@ -77,7 +88,14 @@ docker run -p 8000:8000 splitsmart
 | GET    | `/groups/{id}`                             | Get group details                     |
 | POST   | `/groups/by-invite/{code}/members`         | Join a group via invite code          |
 | POST   | `/groups/{id}/expenses`                    | Log an expense (equal split default)  |
-| GET    | `/groups/{id}/settlement`                  | Get the minimal settlement plan       |
+| GET    | `/groups/{id}/settlement`                  | Get the minimal settlement plan, plus the naive debt graph for comparison |
+
+## Known limitation
+
+Uses SQLite on local disk for simplicity — on most free hosting tiers the
+filesystem is ephemeral, so data resets on redeploy/restart. Fine for a demo;
+swapping in Postgres (e.g. Render's free Postgres) is a small change since
+SQLAlchemy already abstracts the connection string.
 
 ## What's next
 

@@ -3,132 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SplitSmart — Minimum-Transaction Expense Splitting</title>
+<title>SplitSmart 💸 Split fair, settle smart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --border: #262b36;
-    --text: #e8e9ec;
-    --muted: #8b93a3;
-    --accent: #5eead4;
-    --accent2: #f472b6;
-    --danger: #f87171;
+    --bg1: #fff1eb;
+    --bg2: #e8f6ff;
+    --card: #ffffff;
+    --border: #f0e6f7;
+    --text: #2d2a3d;
+    --muted: #8b8599;
+    --accent: #ff8fa3;
+    --accent2: #7dd3c0;
+    --accent3: #ffd166;
+    --accent4: #9b8cf2;
+    --shadow: 0 8px 24px rgba(155, 140, 242, 0.12);
   }
   * { box-sizing: border-box; }
   body {
-    background: var(--bg);
+    background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+    background-attachment: fixed;
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Nunito', sans-serif;
     margin: 0;
-    padding: 2rem 1rem;
+    padding: 2rem 1rem 4rem;
     display: flex;
     justify-content: center;
+    min-height: 100vh;
   }
-  .wrap { width: 100%; max-width: 640px; }
-  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-  .sub { color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem; }
+  .wrap { width: 100%; max-width: 700px; }
+  h1 {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    background: linear-gradient(90deg, var(--accent), var(--accent4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .sub { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
   .card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
   }
-  .card h2 { font-size: 1rem; margin: 0 0 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-  input, select {
-    background: #0d0f13;
-    border: 1px solid var(--border);
+  .card h2 {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.05rem;
+    margin: 0 0 1rem;
     color: var(--text);
-    padding: 0.6rem 0.75rem;
-    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  input, select {
+    background: #faf9fd;
+    border: 2px solid var(--border);
+    color: var(--text);
+    padding: 0.7rem 0.9rem;
+    border-radius: 12px;
     width: 100%;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.7rem;
     font-size: 0.95rem;
+    font-family: 'Nunito', sans-serif;
+    transition: border-color 0.15s;
   }
-  label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+  input:focus, select:focus { outline: none; border-color: var(--accent4); }
+  label { font-size: 0.8rem; color: var(--muted); font-weight: 700; display: block; margin-bottom: 0.3rem; }
   button {
-    background: var(--accent);
-    color: #04201c;
+    background: linear-gradient(90deg, var(--accent), #ff6f91);
+    color: white;
     border: none;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
-  button:hover { opacity: 0.9; }
-  .member-tag {
-    display: inline-block;
-    background: #1e2330;
-    border: 1px solid var(--border);
-    padding: 0.3rem 0.7rem;
+    padding: 0.75rem 1.3rem;
     border-radius: 999px;
-    margin: 0.15rem;
+    font-weight: 700;
+    font-family: 'Quicksand', sans-serif;
+    cursor: pointer;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 14px rgba(255, 111, 145, 0.35);
+    transition: transform 0.1s;
+  }
+  button:hover { transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 800;
+    font-size: 0.75rem;
+    font-family: 'Quicksand', sans-serif;
+    flex-shrink: 0;
+  }
+  .member-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #faf9fd;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem 0.3rem 0.3rem;
+    border-radius: 999px;
+    margin: 0.2rem;
     font-size: 0.85rem;
+    font-weight: 600;
   }
   .txn {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 0.5rem;
+    border-radius: 12px;
+    margin-bottom: 0.4rem;
+    background: #faf9fd;
   }
-  .txn:last-child { border-bottom: none; }
-  .txn .arrow { color: var(--accent); font-weight: 600; }
-  .txn .amount { color: var(--accent2); font-weight: 700; }
-  .stat-row { display: flex; gap: 1rem; margin-top: 0.75rem; }
-  .stat { flex: 1; background: #0d0f13; border-radius: 8px; padding: 0.75rem; text-align: center; }
-  .stat .n { font-size: 1.4rem; font-weight: 700; }
-  .stat .l { font-size: 0.75rem; color: var(--muted); }
+  .txn .who { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.9rem; }
+  .txn .arrow { color: var(--accent4); font-size: 1.1rem; }
+  .txn .amount {
+    color: white;
+    background: linear-gradient(90deg, var(--accent3), #ffb84d);
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+  .stat-row { display: flex; gap: 0.8rem; margin-top: 1rem; }
+  .stat {
+    flex: 1;
+    background: #faf9fd;
+    border-radius: 14px;
+    padding: 0.9rem;
+    text-align: center;
+  }
+  .stat .n { font-family: 'Quicksand', sans-serif; font-size: 1.6rem; font-weight: 700; }
+  .stat .l { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+  .stat.win .n { color: var(--accent2); }
+  .stat.win { background: #edfaf5; }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent2), #4fc3a1);
+    color: white;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    font-family: 'Quicksand', sans-serif;
+    margin-bottom: 1rem;
+  }
   .hidden { display: none; }
-  .expense-row { display: flex; gap: 0.5rem; }
+  .expense-row { display: flex; gap: 0.6rem; }
   .expense-row input { flex: 1; }
-  .invite { color: var(--accent); font-family: monospace; font-size: 1.1rem; }
-  .empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 1rem; }
+  .invite {
+    color: var(--accent4);
+    font-family: monospace;
+    font-size: 1.05rem;
+    background: #f4f1ff;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+  }
+  .empty { color: var(--muted); font-size: 0.95rem; text-align: center; padding: 1.2rem; font-weight: 600; }
+  .graph-section { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .graph-col { flex: 1; min-width: 260px; text-align: center; }
+  .graph-col h3 {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .graph-col.after h3 { color: var(--accent2); }
+  svg.graph { width: 100%; max-width: 280px; height: 260px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>SplitSmart</h1>
-  <p class="sub">Group expense splitting with minimum-transaction settlement</p>
+  <h1>SplitSmart 💸</h1>
+  <p class="sub">Split fair. Settle smart. Fewest possible payments, guaranteed.</p>
 
   <div class="card" id="createCard">
-    <h2>Create a group</h2>
-    <label>Group name</label>
-    <input id="groupName" placeholder="Goa Trip">
-    <label>Members (comma separated)</label>
+    <h2>✨ Start a new group</h2>
+    <label>What's this for?</label>
+    <input id="groupName" placeholder="e.g. Goa Trip 🏖️">
+    <label>Who's in?</label>
     <input id="memberNames" placeholder="Alice, Bob, Charlie">
     <button onclick="createGroup()">Create group</button>
   </div>
 
   <div class="card hidden" id="groupCard">
-    <h2>Group</h2>
+    <h2>👥 Group</h2>
     <div id="groupInfo"></div>
-    <div id="memberList" style="margin-top:0.5rem;"></div>
+    <div id="memberList" style="margin-top:0.6rem;"></div>
   </div>
 
   <div class="card hidden" id="expenseCard">
-    <h2>Add expense</h2>
+    <h2>🧾 Add an expense</h2>
     <div class="expense-row">
-      <input id="expDesc" placeholder="Description (e.g. Hotel)">
-      <input id="expAmount" placeholder="Amount (₹)" type="number">
+      <input id="expDesc" placeholder="What was it? (e.g. Hotel)">
+      <input id="expAmount" placeholder="₹ Amount" type="number">
     </div>
-    <label>Paid by</label>
+    <label>Who paid?</label>
     <select id="expPaidBy"></select>
     <button onclick="addExpense()">Add expense</button>
   </div>
 
   <div class="card hidden" id="settlementCard">
-    <h2>Settlement</h2>
+    <h2>🤝 Settlement plan</h2>
     <div id="settlementList"></div>
     <div class="stat-row" id="statRow"></div>
+  </div>
+
+  <div class="card hidden" id="graphCard">
+    <h2>🕸️ Why this matters — the debt tangle, before &amp; after</h2>
+    <div id="graphBadge"></div>
+    <div class="graph-section">
+      <div class="graph-col before">
+        <h3>😵 Without SplitSmart</h3>
+        <svg class="graph" id="graphBefore"></svg>
+      </div>
+      <div class="graph-col after">
+        <h3>✅ With SplitSmart</h3>
+        <svg class="graph" id="graphAfter"></svg>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
 const API = window.location.origin;
 let currentGroup = null;
+
+const AVATAR_COLORS = ['#ff8fa3', '#7dd3c0', '#ffd166', '#9b8cf2', '#6ec6ff', '#ff9770', '#c792ea', '#4fc3a1'];
+
+function colorFor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function initials(name) {
+  return name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
 
 async function createGroup() {
   const name = document.getElementById('groupName').value.trim();
@@ -151,12 +272,18 @@ function renderGroup() {
   document.getElementById('groupCard').classList.remove('hidden');
   document.getElementById('expenseCard').classList.remove('hidden');
   document.getElementById('settlementCard').classList.remove('hidden');
+  document.getElementById('graphCard').classList.remove('hidden');
 
   document.getElementById('groupInfo').innerHTML =
-    `<strong>${currentGroup.name}</strong> — invite code: <span class="invite">${currentGroup.invite_code}</span>`;
+    `<strong>${currentGroup.name}</strong> · invite code <span class="invite">${currentGroup.invite_code}</span>`;
 
   document.getElementById('memberList').innerHTML =
-    currentGroup.members.map(m => `<span class="member-tag">${m.name}</span>`).join('');
+    currentGroup.members.map(m => `
+      <span class="member-tag">
+        <span class="avatar" style="background:${colorFor(m.name)}">${initials(m.name)}</span>
+        ${m.name}
+      </span>
+    `).join('');
 
   const select = document.getElementById('expPaidBy');
   select.innerHTML = currentGroup.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
@@ -188,20 +315,87 @@ async function refreshSettlement() {
 
   const list = document.getElementById('settlementList');
   if (data.transactions.length === 0) {
-    list.innerHTML = '<div class="empty">All settled up 🎉</div>';
+    list.innerHTML = '<div class="empty">All settled up! 🎉</div>';
   } else {
     list.innerHTML = data.transactions.map(t => `
       <div class="txn">
-        <span>${t.payer_name} <span class="arrow">→</span> ${t.payee_name}</span>
+        <span class="who">
+          <span class="avatar" style="background:${colorFor(t.payer_name)}">${initials(t.payer_name)}</span>
+          ${t.payer_name} <span class="arrow">➜</span>
+          <span class="avatar" style="background:${colorFor(t.payee_name)}">${initials(t.payee_name)}</span>
+          ${t.payee_name}
+        </span>
         <span class="amount">₹${t.amount_rupees.toFixed(2)}</span>
       </div>
     `).join('');
   }
 
   document.getElementById('statRow').innerHTML = `
-    <div class="stat"><div class="n">${data.transaction_count}</div><div class="l">transactions needed</div></div>
-    <div class="stat"><div class="n">${data.naive_transaction_count}</div><div class="l">naive would need</div></div>
+    <div class="stat"><div class="n">${data.naive_transaction_count}</div><div class="l">Without SplitSmart</div></div>
+    <div class="stat win"><div class="n">${data.transaction_count}</div><div class="l">With SplitSmart</div></div>
   `;
+
+  renderGraphs(data);
+}
+
+function renderGraphs(data) {
+  const members = data.members;
+  const saved = data.naive_transaction_count - data.transaction_count;
+  const pct = data.naive_transaction_count > 0 ? Math.round((saved / data.naive_transaction_count) * 100) : 0;
+
+  document.getElementById('graphBadge').innerHTML = saved > 0
+    ? `<span class="badge">⚡ ${pct}% fewer payments needed</span>`
+    : (members.length > 1 ? `<span class="badge">🎉 Already minimal — nothing to optimize</span>` : '');
+
+  drawGraph('graphBefore', members, data.naive_edges.map(e => ({from: e.from_id, to: e.to_id, amount: e.amount_rupees})));
+  drawGraph('graphAfter', members, data.transactions.map(t => ({from: t.payer_id, to: t.payee_id, amount: t.amount_rupees})));
+}
+
+function drawGraph(svgId, members, edges) {
+  const svg = document.getElementById(svgId);
+  const W = 280, H = 260, cx = W / 2, cy = H / 2 - 10, R = 85;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const n = members.length;
+  const pos = {};
+  members.forEach((m, i) => {
+    const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+    pos[m.id] = { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle), name: m.name };
+  });
+
+  let markerDefs = `
+    <defs>
+      <marker id="${svgId}-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L7,3 z" fill="#c9c2e0"></path>
+      </marker>
+    </defs>`;
+
+  let edgeSvg = '';
+  edges.forEach(e => {
+    const a = pos[e.from], b = pos[e.to];
+    if (!a || !b) return;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const shrink = 18;
+    const x1 = a.x + (dx / dist) * shrink;
+    const y1 = a.y + (dy / dist) * shrink;
+    const x2 = b.x - (dx / dist) * shrink;
+    const y2 = b.y - (dy / dist) * shrink;
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    edgeSvg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#c9c2e0" stroke-width="1.5" marker-end="url(#${svgId}-arrow)"></line>`;
+    edgeSvg += `<rect x="${mx - 16}" y="${my - 8}" width="32" height="14" rx="7" fill="white" opacity="0.9"></rect>`;
+    edgeSvg += `<text x="${mx}" y="${my + 3}" font-size="8" text-anchor="middle" fill="#8b8599" font-family="Nunito">₹${Math.round(e.amount)}</text>`;
+  });
+
+  let nodeSvg = '';
+  members.forEach(m => {
+    const p = pos[m.id];
+    const color = colorFor(m.name);
+    nodeSvg += `<circle cx="${p.x}" cy="${p.y}" r="16" fill="${color}"></circle>`;
+    nodeSvg += `<text x="${p.x}" y="${p.y + 4}" font-size="10" font-weight="700" text-anchor="middle" fill="white" font-family="Quicksand">${initials(m.name)}</text>`;
+  });
+
+  svg.innerHTML = markerDefs + edgeSvg + nodeSvg;
 }
 </script>
 </body>

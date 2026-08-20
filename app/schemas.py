@@ -53,8 +53,18 @@ class TransactionOut(BaseModel):
     amount_rupees: float
 
 
+class GraphEdge(BaseModel):
+    from_id: str
+    from_name: str
+    to_id: str
+    to_name: str
+    amount_rupees: float
+
+
 class SettlementResponse(BaseModel):
     group_id: str
     transactions: list[TransactionOut]
     transaction_count: int
     naive_transaction_count: int
+    naive_edges: list[GraphEdge]
+    members: list["MemberOut"]
