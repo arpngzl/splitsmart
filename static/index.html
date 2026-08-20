@@ -5,559 +5,601 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SplitSmart 💸 Split fair, settle smart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg1: #fff1eb;
-    --bg2: #e8f6ff;
-    --card: #ffffff;
-    --border: #f0e6f7;
-    --text: #2d2a3d;
-    --muted: #8b8599;
-    --accent: #ff8fa3;
-    --accent2: #7dd3c0;
-    --accent3: #ffd166;
-    --accent4: #9b8cf2;
-    --shadow: 0 8px 24px rgba(155, 140, 242, 0.12);
-  }
-  * { box-sizing: border-box; }
-  body {
-    background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
-    background-attachment: fixed;
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    margin: 0;
-    padding: 2rem 1rem 4rem;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .wrap { width: 100%; max-width: 700px; }
-  h1 {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.25rem;
-    background: linear-gradient(90deg, var(--accent), var(--accent4));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .sub { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-  }
-  .card h2 {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 1.05rem;
-    margin: 0 0 1rem;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  input, select {
-    background: #faf9fd;
-    border: 2px solid var(--border);
-    color: var(--text);
-    padding: 0.7rem 0.9rem;
-    border-radius: 12px;
-    width: 100%;
-    margin-bottom: 0.7rem;
-    font-size: 0.95rem;
-    font-family: 'Nunito', sans-serif;
-    transition: border-color 0.15s;
-  }
-  input:focus, select:focus { outline: none; border-color: var(--accent4); }
-  label { font-size: 0.8rem; color: var(--muted); font-weight: 700; display: block; margin-bottom: 0.3rem; }
-  button {
-    background: linear-gradient(90deg, var(--accent), #ff6f91);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.3rem;
-    border-radius: 999px;
-    font-weight: 700;
-    font-family: 'Quicksand', sans-serif;
-    cursor: pointer;
-    font-size: 0.95rem;
-    box-shadow: 0 4px 14px rgba(255, 111, 145, 0.35);
-    transition: transform 0.1s;
-  }
-  button:hover { transform: translateY(-1px); }
-  button:active { transform: translateY(0); }
-  .avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    color: white;
-    font-weight: 800;
-    font-size: 0.75rem;
-    font-family: 'Quicksand', sans-serif;
-    flex-shrink: 0;
-  }
-  .member-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    background: #faf9fd;
-    border: 1px solid var(--border);
-    padding: 0.3rem 0.7rem 0.3rem 0.3rem;
-    border-radius: 999px;
-    margin: 0.2rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-  .txn {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.7rem 0.5rem;
-    border-radius: 12px;
-    margin-bottom: 0.4rem;
-    background: #faf9fd;
-  }
-  .txn .who { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 0.9rem; }
-  .txn .arrow { color: var(--accent4); font-size: 1.1rem; }
-  .txn .amount {
-    color: white;
-    background: linear-gradient(90deg, var(--accent3), #ffb84d);
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.85rem;
-  }
-  .stat-row { display: flex; gap: 0.8rem; margin-top: 1rem; }
-  .stat {
-    flex: 1;
-    background: #faf9fd;
-    border-radius: 14px;
-    padding: 0.9rem;
-    text-align: center;
-  }
-  .stat .n { font-family: 'Quicksand', sans-serif; font-size: 1.6rem; font-weight: 700; }
-  .stat .l { font-size: 0.72rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
-  .stat.win .n { color: var(--accent2); }
-  .stat.win { background: #edfaf5; }
-  .badge {
-    display: inline-block;
-    background: linear-gradient(90deg, var(--accent2), #4fc3a1);
-    color: white;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.85rem;
-    font-family: 'Quicksand', sans-serif;
-    margin-bottom: 1rem;
-  }
-  .hidden { display: none; }
-  .expense-row { display: flex; gap: 0.6rem; }
-  .expense-row input { flex: 1; }
-  .invite {
-    color: var(--accent4);
-    font-family: monospace;
-    font-size: 1.05rem;
-    background: #f4f1ff;
-    padding: 0.2rem 0.6rem;
-    border-radius: 8px;
-  }
-  .empty { color: var(--muted); font-size: 0.95rem; text-align: center; padding: 1.2rem; font-weight: 600; }
-  .graph-section { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .graph-col { flex: 1; min-width: 260px; text-align: center; }
-  .graph-col h3 {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 0.9rem;
-    margin: 0 0 0.5rem;
-    color: var(--muted);
-    font-weight: 700;
-  }
-  .graph-col.after h3 { color: var(--accent2); }
-  svg.graph { width: 100%; max-width: 280px; height: 260px; }
-
-  /* --- new: insights, bar charts, expense history --- */
-  .ai-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    background: linear-gradient(90deg, var(--accent4), #7d6cf0);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.72rem;
-    font-family: 'Quicksand', sans-serif;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-  .ai-badge.rule { background: linear-gradient(90deg, var(--accent2), #4fc3a1); }
-  .tip-list { list-style: none; margin: 0; padding: 0; }
-  .tip-list li {
-    background: #faf9fd;
-    border-radius: 12px;
-    padding: 0.7rem 0.9rem;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    line-height: 1.4;
-    display: flex;
-    gap: 0.5rem;
-  }
-  .tip-list li::before { content: '💡'; flex-shrink: 0; }
-  .bar-person { margin-bottom: 1.1rem; }
-  .bar-person:last-child { margin-bottom: 0; }
-  .bar-person-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
-  .bar-person-head strong { font-size: 0.9rem; }
-  .bar-net { margin-left: auto; font-size: 0.8rem; font-weight: 800; font-family: 'Quicksand', sans-serif; }
-  .bar-net.pos { color: var(--accent2); }
-  .bar-net.neg { color: var(--accent); }
-  .bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
-  .bar-label { width: 68px; font-size: 0.72rem; color: var(--muted); font-weight: 700; flex-shrink: 0; }
-  .bar-track { flex: 1; background: #f0eef7; border-radius: 999px; height: 10px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
-  .bar-fill.paid { background: linear-gradient(90deg, var(--accent), #ff6f91); }
-  .bar-fill.share { background: linear-gradient(90deg, var(--accent4), #7d6cf0); }
-  .bar-val { width: 68px; text-align: right; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
-  .cat-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
-  .cat-row:last-child { margin-bottom: 0; }
-  .cat-emoji { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
-  .cat-name { width: 92px; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; text-transform: capitalize; }
-  .cat-track { flex: 1; background: #f0eef7; border-radius: 999px; height: 12px; overflow: hidden; }
-  .cat-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent3), #ffb84d); }
-  .cat-val { width: 78px; text-align: right; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
-  .expense-item {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.6rem 0.3rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .expense-item:last-child { border-bottom: none; }
-  .expense-item .cat-emoji { font-size: 1.3rem; }
-  .expense-item .exp-desc { font-weight: 700; font-size: 0.9rem; }
-  .expense-item .exp-meta { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
-  .expense-item .exp-amount { margin-left: auto; font-weight: 800; font-family: 'Quicksand', sans-serif; }
+:root{
+  --bg1:#fff1eb; --bg2:#e8f6ff; --card:#ffffff; --border:#f0e6f7;
+  --text:#2d2a3d; --muted:#8b8599;
+  --accent:#ff8fa3; --accent2:#7dd3c0; --accent3:#ffd166; --accent4:#9b8cf2;
+  --danger:#ff6f6f; --shadow:0 8px 24px rgba(155,140,242,.12);
+  --cat1:#ff8fa3; --cat2:#7dd3c0; --cat3:#ffd166; --cat4:#9b8cf2; --cat5:#ff6f91; --cat6:#4fc3a1; --cat7:#ffb84d;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);font-family:'Nunito',sans-serif;padding-bottom:70px}
+h1,h2,h3{font-family:'Quicksand',sans-serif;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:1.4rem 1rem 2rem}
+.brand{font-family:'Quicksand',sans-serif;font-weight:800;font-size:2rem;background:linear-gradient(90deg,var(--accent),var(--accent4));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:.2rem 0 1.6rem;font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.3rem;box-shadow:var(--shadow);margin-bottom:1rem}
+.card h3{font-size:1.02rem;display:flex;align-items:center;gap:.4rem;margin-bottom:.8rem}
+input,select,textarea{width:100%;padding:.65rem .8rem;border-radius:12px;border:2px solid var(--border);color:var(--text);font-family:'Nunito',sans-serif;font-size:.95rem;background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent4)}
+label{font-size:.76rem;color:var(--muted);font-weight:700;display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.02em}
+.field{margin-bottom:.9rem}
+.btn{border:none;border-radius:14px;padding:.75rem 1.2rem;font-weight:700;font-family:'Quicksand',sans-serif;font-size:.95rem;cursor:pointer;transition:transform .1s;display:inline-flex;align-items:center;gap:.4rem;justify-content:center}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#ff6f91);color:#fff;width:100%}
+.btn-teal{background:linear-gradient(90deg,var(--accent2),#4fc3a1);color:#fff}
+.btn-purple{background:linear-gradient(90deg,var(--accent4),#7d6cf0);color:#fff}
+.btn-amber{background:linear-gradient(90deg,var(--accent3),#ffb84d);color:#7a5b00}
+.btn-ghost{background:#fff;border:2px solid var(--border);color:var(--text)}
+.btn-danger{background:#fff;border:2px solid var(--danger);color:var(--danger)}
+.btn-sm{padding:.4rem .8rem;font-size:.8rem;border-radius:10px}
+.btn-block{width:100%}
+.row{display:flex;gap:.6rem}
+.row>*{flex:1}
+.chip{display:inline-flex;align-items:center;gap:.3rem;background:var(--bg2);color:var(--text);padding:.3rem .7rem;border-radius:999px;font-size:.78rem;font-weight:700}
+.ai-badge{background:linear-gradient(90deg,var(--accent4),#7d6cf0);color:#fff;padding:.15rem .55rem;border-radius:999px;font-size:.68rem;font-weight:800;letter-spacing:.02em}
+.ai-badge.rule{background:linear-gradient(90deg,var(--accent2),#4fc3a1)}
+.hidden{display:none !important}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.emoji-pick{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.9rem}
+.emoji-pick span{font-size:1.3rem;padding:.35rem .5rem;border-radius:10px;border:2px solid var(--border);cursor:pointer}
+.emoji-pick span.sel{border-color:var(--accent4);background:var(--bg2)}
+.member-row{display:flex;gap:.5rem;margin-bottom:.5rem}
+.member-row input{flex:1}
+.member-row button{background:#fff;border:2px solid var(--border);border-radius:10px;color:var(--danger);width:38px;cursor:pointer}
+.topbar{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem}
+.topbar .gemoji{font-size:1.8rem}
+.topbar .ginfo{flex:1}
+.topbar h2{font-size:1.25rem}
+.avatar{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-family:'Quicksand',sans-serif;font-size:.85rem;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.avatars{display:flex}
+.avatars .avatar{margin-left:-10px}
+.invite-pill{display:flex;align-items:center;gap:.5rem;background:var(--bg2);border-radius:999px;padding:.35rem .5rem .35rem 1rem;font-size:.8rem;font-weight:700;margin-bottom:1.1rem;cursor:pointer;width:fit-content}
+.tabs{display:flex;gap:.35rem;overflow-x:auto;margin-bottom:1rem;padding-bottom:.2rem}
+.tab{white-space:nowrap;padding:.5rem 1rem;border-radius:999px;font-weight:800;font-family:'Quicksand',sans-serif;font-size:.85rem;cursor:pointer;color:var(--muted);background:#fff;border:2px solid var(--border)}
+.tab.active{color:#fff;background:linear-gradient(90deg,var(--accent),var(--accent4));border-color:transparent}
+.expense-item{display:flex;align-items:center;gap:.7rem;padding:.7rem 0;border-bottom:1px solid var(--border)}
+.expense-item:last-child{border-bottom:none}
+.exp-emoji{font-size:1.4rem;width:38px;height:38px;background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.exp-mid{flex:1;min-width:0}
+.exp-desc{font-weight:800;font-family:'Quicksand',sans-serif;font-size:.92rem}
+.exp-meta{font-size:.75rem;color:var(--muted)}
+.exp-amt{font-weight:800;font-family:'Quicksand',sans-serif;color:var(--text);font-size:.95rem;text-align:right}
+.exp-actions{display:flex;gap:.3rem}
+.exp-actions button{background:none;border:none;cursor:pointer;font-size:.95rem;color:var(--muted);padding:.2rem}
+.search-row{display:flex;gap:.5rem;margin-bottom:1rem}
+.empty{color:var(--muted);text-align:center;padding:2rem 1rem;font-weight:700}
+.bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
+.bar-label{width:64px;font-size:.72rem;color:var(--muted);font-weight:700;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;background:var(--bg2);border-radius:8px;height:14px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px}
+.bar-fill.paid{background:linear-gradient(90deg,var(--accent),#ff6f91)}
+.bar-fill.owed{background:linear-gradient(90deg,var(--accent4),#7d6cf0)}
+.bar-net{width:70px;text-align:right;font-size:.78rem;font-weight:800;font-family:'Quicksand',sans-serif;flex-shrink:0}
+.bar-net.pos{color:var(--accent2)}
+.bar-net.neg{color:var(--accent)}
+.donut-wrap{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.donut{width:130px;height:130px;border-radius:50%;flex-shrink:0}
+.legend{flex:1;min-width:150px}
+.legend-row{display:flex;align-items:center;gap:.4rem;font-size:.8rem;margin-bottom:.35rem;font-weight:700}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.trend-bars{display:flex;align-items:flex-end;gap:.4rem;height:80px;margin-top:.5rem}
+.trend-bar{flex:1;background:linear-gradient(180deg,var(--accent4),#7d6cf0);border-radius:6px 6px 2px 2px;min-height:4px}
+.recap-card{background:linear-gradient(120deg,#fff1eb,#e8f6ff);border:1px solid var(--border);border-radius:18px;padding:1.1rem;font-weight:700;font-size:.93rem;line-height:1.5;margin-bottom:1rem;position:relative}
+.tip{display:flex;gap:.55rem;padding:.6rem 0;border-bottom:1px dashed var(--border);font-size:.88rem}
+.tip:last-child{border-bottom:none}
+.tip .ti{font-size:1.1rem}
+.txn{display:flex;align-items:center;gap:.6rem;background:var(--bg2);border-radius:14px;padding:.7rem .9rem;margin-bottom:.6rem;font-weight:700;font-size:.88rem}
+.txn .arrow{color:var(--accent4)}
+.ring-wrap{display:flex;align-items:center;gap:1.2rem}
+.ring{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ring-inner{width:76px;height:76px;background:#fff;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-inner b{font-family:'Quicksand',sans-serif;font-size:1.1rem}
+.ring-inner span{font-size:.6rem;color:var(--muted);font-weight:700}
+.achieve-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.achieve{background:var(--bg2);border-radius:16px;padding:.8rem;text-align:center}
+.achieve .ae{font-size:1.6rem}
+.achieve .at{font-weight:800;font-family:'Quicksand',sans-serif;font-size:.8rem;margin:.25rem 0 .1rem}
+.achieve .ad{font-size:.68rem;color:var(--muted)}
+.fab{position:fixed;bottom:80px;right:18px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent4));color:#fff;font-size:1.6rem;border:none;box-shadow:0 8px 22px rgba(255,111,145,.4);cursor:pointer;z-index:40}
+.chat-fab{position:fixed;bottom:18px;right:18px;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--accent4),#7d6cf0);color:#fff;font-size:1.3rem;border:none;box-shadow:0 8px 20px rgba(155,140,242,.4);cursor:pointer;z-index:40}
+.overlay{position:fixed;inset:0;background:rgba(45,42,61,.35);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.overlay.center-modal{align-items:center}
+.sheet{background:#fff;border-radius:22px 22px 0 0;padding:1.3rem;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;animation:slideUp .2s ease}
+.overlay.center-modal .sheet{border-radius:22px;animation:pop .15s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.sheet-head h3{font-size:1.1rem}
+.close-x{background:var(--bg2);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;color:var(--text)}
+.mode-toggle{display:flex;background:var(--bg2);border-radius:12px;padding:3px;margin-bottom:1rem}
+.mode-toggle button{flex:1;border:none;background:none;padding:.5rem;border-radius:10px;font-weight:800;font-family:'Quicksand',sans-serif;font-size:.82rem;cursor:pointer;color:var(--muted)}
+.mode-toggle button.active{background:#fff;color:var(--text);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.member-toggle{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.3rem}
+.member-toggle span{padding:.35rem .7rem;border-radius:999px;border:2px solid var(--border);font-size:.8rem;font-weight:700;cursor:pointer}
+.member-toggle span.sel{border-color:var(--accent4);background:var(--bg2)}
+.parse-preview{background:var(--bg2);border-radius:14px;padding:.9rem;margin-top:.8rem;font-size:.85rem}
+.parse-preview .pv-row{display:flex;justify-content:space-between;margin-bottom:.3rem;font-weight:700}
+.toast-wrap{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:.4rem;align-items:center}
+.toast{background:var(--text);color:#fff;padding:.6rem 1.1rem;border-radius:999px;font-size:.82rem;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.2);animation:pop .15s ease}
+.chat-panel{position:fixed;bottom:0;right:0;width:100%;max-width:400px;height:70vh;background:#fff;border-radius:20px 0 0 0;box-shadow:-4px 0 24px rgba(0,0,0,.15);z-index:60;display:flex;flex-direction:column;animation:slideUp .2s ease}
+.chat-head{display:flex;justify-content:space-between;align-items:center;padding:1rem;border-bottom:1px solid var(--border)}
+.chat-msgs{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.6rem}
+.msg{max-width:80%;padding:.6rem .85rem;border-radius:14px;font-size:.85rem;font-weight:600;line-height:1.35}
+.msg.user{align-self:flex-end;background:linear-gradient(90deg,var(--accent),var(--accent4));color:#fff;border-bottom-right-radius:4px}
+.msg.bot{align-self:flex-start;background:var(--bg2);border-bottom-left-radius:4px}
+.chat-input-row{display:flex;gap:.5rem;padding:.9rem;border-top:1px solid var(--border)}
+.chat-suggest{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 1rem .8rem}
+.chat-suggest span{background:var(--bg2);padding:.3rem .6rem;border-radius:999px;font-size:.72rem;font-weight:700;cursor:pointer}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>SplitSmart 💸</h1>
-  <p class="sub">Split fair. Settle smart. Fewest possible payments, guaranteed.</p>
-
-  <div class="card" id="createCard">
-    <h2>✨ Start a new group</h2>
-    <label>What's this for?</label>
-    <input id="groupName" placeholder="e.g. Goa Trip 🏖️">
-    <label>Who's in?</label>
-    <input id="memberNames" placeholder="Alice, Bob, Charlie">
-    <button onclick="createGroup()">Create group</button>
-  </div>
-
-  <div class="card hidden" id="groupCard">
-    <h2>👥 Group</h2>
-    <div id="groupInfo"></div>
-    <div id="memberList" style="margin-top:0.6rem;"></div>
-  </div>
-
-  <div class="card hidden" id="expenseCard">
-    <h2>🧾 Add an expense</h2>
-    <div class="expense-row">
-      <input id="expDesc" placeholder="What was it? (e.g. Hotel)">
-      <input id="expAmount" placeholder="₹ Amount" type="number">
-    </div>
-    <label>Who paid?</label>
-    <select id="expPaidBy"></select>
-    <button onclick="addExpense()">Add expense</button>
-  </div>
-
-  <div class="card hidden" id="settlementCard">
-    <h2>🤝 Settlement plan</h2>
-    <div id="settlementList"></div>
-    <div class="stat-row" id="statRow"></div>
-  </div>
-
-  <div class="card hidden" id="graphCard">
-    <h2>🕸️ Why this matters — the debt tangle, before &amp; after</h2>
-    <div id="graphBadge"></div>
-    <div class="graph-section">
-      <div class="graph-col before">
-        <h3>😵 Without SplitSmart</h3>
-        <svg class="graph" id="graphBefore"></svg>
-      </div>
-      <div class="graph-col after">
-        <h3>✅ With SplitSmart</h3>
-        <svg class="graph" id="graphAfter"></svg>
-      </div>
-    </div>
-  </div>
-
-  <div class="card hidden" id="insightsCard">
-    <h2>🧠 Smart insights</h2>
-    <div id="insightsBadge"></div>
-    <ul class="tip-list" id="tipList"></ul>
-  </div>
-
-  <div class="card hidden" id="barsCard">
-    <h2>📊 Who's paid what</h2>
-    <div id="personBars"></div>
-  </div>
-
-  <div class="card hidden" id="categoryCard">
-    <h2>🍕 Spending by category</h2>
-    <div id="categoryBars"></div>
-  </div>
-
-  <div class="card hidden" id="historyCard">
-    <h2>📜 Expense history</h2>
-    <div id="expenseHistory"></div>
-  </div>
-</div>
+<div class="wrap" id="app"></div>
+<div class="toast-wrap" id="toasts"></div>
 
 <script>
-const API = window.location.origin;
-let currentGroup = null;
+const API = '';
+let STATE = { screen: 'home', group: null, tab: 'expenses', chatOpen: false, chatMsgs: [], expenseFilter: {} };
+const CAT_COLORS = ['var(--cat1)','var(--cat2)','var(--cat3)','var(--cat4)','var(--cat5)','var(--cat6)','var(--cat7)'];
+const EMOJIS = ['🧾','🏠','✈️','🍕','🎉','🏖️','🎓','💼','🚗','⛺'];
 
-const AVATAR_COLORS = ['#ff8fa3', '#7dd3c0', '#ffd166', '#9b8cf2', '#6ec6ff', '#ff9770', '#c792ea', '#4fc3a1'];
+// ---------- api ----------
+async function api(path, opts={}) {
+  try {
+    const res = await fetch(API+path, {headers:{'Content-Type':'application/json'}, ...opts});
+    if (!res.ok) { const e = await res.json().catch(()=>({detail:'Request failed'})); throw new Error(e.detail || 'Request failed'); }
+    return await res.json();
+  } catch(err) { toast(err.message || 'Something went wrong'); throw err; }
+}
+const get = p => api(p);
+const post = (p,b) => api(p,{method:'POST',body:JSON.stringify(b)});
+const patch = (p,b) => api(p,{method:'PATCH',body:JSON.stringify(b)});
+const del = p => api(p,{method:'DELETE'});
 
-function colorFor(name) {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+function toast(msg){
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>t.remove(), 2600);
 }
 
-function initials(name) {
-  return name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
-}
+// ---------- init ----------
+const savedGroupId = localStorage.getItem('splitsmart_group_id');
+if (savedGroupId) { loadGroup(savedGroupId); } else { renderHome(); }
 
-async function createGroup() {
-  const name = document.getElementById('groupName').value.trim();
-  const namesRaw = document.getElementById('memberNames').value.trim();
-  if (!name || !namesRaw) return alert('Fill in group name and members');
-  const member_names = namesRaw.split(',').map(s => s.trim()).filter(Boolean);
-  if (member_names.length < 2) return alert('Add at least 2 members');
-
-  const res = await fetch(`${API}/groups`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({name, member_names})
-  });
-  if (!res.ok) return alert('Failed to create group');
-  currentGroup = await res.json();
-  renderGroup();
-}
-
-function renderGroup() {
-  document.getElementById('groupCard').classList.remove('hidden');
-  document.getElementById('expenseCard').classList.remove('hidden');
-  document.getElementById('settlementCard').classList.remove('hidden');
-  document.getElementById('graphCard').classList.remove('hidden');
-  document.getElementById('insightsCard').classList.remove('hidden');
-  document.getElementById('barsCard').classList.remove('hidden');
-  document.getElementById('categoryCard').classList.remove('hidden');
-  document.getElementById('historyCard').classList.remove('hidden');
-
-  document.getElementById('groupInfo').innerHTML =
-    `<strong>${currentGroup.name}</strong> · invite code <span class="invite">${currentGroup.invite_code}</span>`;
-
-  document.getElementById('memberList').innerHTML =
-    currentGroup.members.map(m => `
-      <span class="member-tag">
-        <span class="avatar" style="background:${colorFor(m.name)}">${initials(m.name)}</span>
-        ${m.name}
-      </span>
-    `).join('');
-
-  const select = document.getElementById('expPaidBy');
-  select.innerHTML = currentGroup.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-
-  refreshSettlement();
-  refreshExpenseHistory();
-  refreshInsights();
-}
-
-async function addExpense() {
-  const description = document.getElementById('expDesc').value.trim();
-  const amount_rupees = parseFloat(document.getElementById('expAmount').value);
-  const paid_by_member_id = document.getElementById('expPaidBy').value;
-  if (!description || !amount_rupees) return alert('Fill in description and amount');
-
-  const res = await fetch(`${API}/groups/${currentGroup.id}/expenses`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({description, amount_rupees, paid_by_member_id})
-  });
-  if (!res.ok) return alert('Failed to add expense');
-
-  document.getElementById('expDesc').value = '';
-  document.getElementById('expAmount').value = '';
-  refreshSettlement();
-  refreshExpenseHistory();
-  refreshInsights();
-}
-
-async function refreshExpenseHistory() {
-  const res = await fetch(`${API}/groups/${currentGroup.id}/expenses`);
-  const expenses = await res.json();
-  const el = document.getElementById('expenseHistory');
-
-  if (expenses.length === 0) {
-    el.innerHTML = '<div class="empty">No expenses yet — add your first one above.</div>';
-    return;
-  }
-
-  el.innerHTML = expenses.map(e => `
-    <div class="expense-item">
-      <span class="cat-emoji">${e.category_emoji}</span>
-      <div>
-        <div class="exp-desc">${e.description}</div>
-        <div class="exp-meta">${e.paid_by_name} paid · ${e.category}</div>
-      </div>
-      <span class="exp-amount">₹${e.amount_rupees.toFixed(2)}</span>
+// ---------- HOME ----------
+function renderHome(){
+  STATE.screen='home';
+  document.getElementById('app').innerHTML = `
+    <div class="center" style="margin-bottom:1.6rem">
+      <div class="brand">SplitSmart 💸</div>
+      <div class="sub">Split fair. Settle smart. Now with AI baked in.</div>
     </div>
-  `).join('');
-}
-
-async function refreshInsights() {
-  const res = await fetch(`${API}/groups/${currentGroup.id}/insights`);
-  const data = await res.json();
-
-  document.getElementById('insightsBadge').innerHTML = data.ai_powered
-    ? `<span class="ai-badge">✨ AI-powered</span>`
-    : `<span class="ai-badge rule">🧮 Smart insights</span>`;
-
-  document.getElementById('tipList').innerHTML =
-    data.tips.map(t => `<li>${t}</li>`).join('');
-
-  const maxBar = Math.max(1, ...data.person_bars.flatMap(b => [b.paid_rupees, b.fair_share_rupees]));
-  document.getElementById('personBars').innerHTML = data.person_bars.map(b => `
-    <div class="bar-person">
-      <div class="bar-person-head">
-        <span class="avatar" style="background:${colorFor(b.name)}">${initials(b.name)}</span>
-        <strong>${b.name}</strong>
-        <span class="bar-net ${b.net_rupees >= 0 ? 'pos' : 'neg'}">${b.net_rupees >= 0 ? '+' : ''}₹${b.net_rupees.toFixed(2)}</span>
+    <div class="card">
+      <h3>✨ Create a group</h3>
+      <div class="field"><label>Group name</label><input id="g-name" placeholder="Goa Trip, Flatmates, ..."></div>
+      <div class="field"><label>Pick a vibe</label>
+        <div class="emoji-pick" id="g-emoji">${EMOJIS.map((e,i)=>`<span data-e="${e}" class="${i===0?'sel':''}">${e}</span>`).join('')}</div>
       </div>
-      <div class="bar-row">
-        <span class="bar-label">Paid</span>
-        <div class="bar-track"><div class="bar-fill paid" style="width:${(b.paid_rupees / maxBar) * 100}%"></div></div>
-        <span class="bar-val">₹${b.paid_rupees.toFixed(2)}</span>
+      <div class="field"><label>Members</label><div id="member-rows"></div>
+        <button class="btn btn-ghost btn-sm" id="add-member-row" type="button">+ Add member</button>
       </div>
-      <div class="bar-row">
-        <span class="bar-label">Fair share</span>
-        <div class="bar-track"><div class="bar-fill share" style="width:${(b.fair_share_rupees / maxBar) * 100}%"></div></div>
-        <span class="bar-val">₹${b.fair_share_rupees.toFixed(2)}</span>
-      </div>
+      <button class="btn btn-primary" id="create-group-btn">Create group</button>
     </div>
-  `).join('');
-
-  const catEl = document.getElementById('categoryBars');
-  if (data.category_breakdown.length === 0) {
-    catEl.innerHTML = '<div class="empty">No expenses yet.</div>';
-  } else {
-    catEl.innerHTML = data.category_breakdown.map(c => `
-      <div class="cat-row">
-        <span class="cat-emoji">${c.emoji}</span>
-        <span class="cat-name">${c.category}</span>
-        <div class="cat-track"><div class="cat-fill" style="width:${c.pct}%"></div></div>
-        <span class="cat-val">₹${c.amount_rupees.toFixed(2)} · ${c.pct}%</span>
+    <div class="card">
+      <h3>🔗 Join with an invite code</h3>
+      <div class="row" style="margin-bottom:.7rem">
+        <input id="join-code" placeholder="Invite code">
+        <input id="join-name" placeholder="Your name">
       </div>
-    `).join('');
-  }
-}
-
-async function refreshSettlement() {
-  const res = await fetch(`${API}/groups/${currentGroup.id}/settlement`);
-  const data = await res.json();
-
-  const list = document.getElementById('settlementList');
-  if (data.transactions.length === 0) {
-    list.innerHTML = '<div class="empty">All settled up! 🎉</div>';
-  } else {
-    list.innerHTML = data.transactions.map(t => `
-      <div class="txn">
-        <span class="who">
-          <span class="avatar" style="background:${colorFor(t.payer_name)}">${initials(t.payer_name)}</span>
-          ${t.payer_name} <span class="arrow">➜</span>
-          <span class="avatar" style="background:${colorFor(t.payee_name)}">${initials(t.payee_name)}</span>
-          ${t.payee_name}
-        </span>
-        <span class="amount">₹${t.amount_rupees.toFixed(2)}</span>
-      </div>
-    `).join('');
-  }
-
-  document.getElementById('statRow').innerHTML = `
-    <div class="stat"><div class="n">${data.naive_transaction_count}</div><div class="l">Without SplitSmart</div></div>
-    <div class="stat win"><div class="n">${data.transaction_count}</div><div class="l">With SplitSmart</div></div>
+      <button class="btn btn-teal btn-block" id="join-group-btn">Join group</button>
+    </div>
   `;
-
-  renderGraphs(data);
+  document.querySelectorAll('#g-emoji span').forEach(el=>el.onclick=()=>{
+    document.querySelectorAll('#g-emoji span').forEach(x=>x.classList.remove('sel')); el.classList.add('sel');
+  });
+  const rows = document.getElementById('member-rows');
+  function addRow(val=''){
+    const d = document.createElement('div'); d.className='member-row';
+    d.innerHTML = `<input placeholder="Member name" value="${val}"><button type="button">✕</button>`;
+    d.querySelector('button').onclick=()=>{ if(rows.children.length>1) d.remove(); };
+    rows.appendChild(d);
+  }
+  addRow(); addRow();
+  document.getElementById('add-member-row').onclick=()=>addRow();
+  document.getElementById('create-group-btn').onclick = async ()=>{
+    const name = document.getElementById('g-name').value.trim();
+    const emoji = document.querySelector('#g-emoji span.sel').dataset.e;
+    const members = [...rows.querySelectorAll('input')].map(i=>i.value.trim()).filter(Boolean);
+    if (!name) return toast('Give your group a name');
+    if (members.length<1) return toast('Add at least one member');
+    const group = await post('/groups', {name, emoji, member_names: members});
+    localStorage.setItem('splitsmart_group_id', group.id);
+    STATE.group = group; renderGroup();
+  };
+  document.getElementById('join-group-btn').onclick = async ()=>{
+    const code = document.getElementById('join-code').value.trim();
+    const name = document.getElementById('join-name').value.trim();
+    if (!code || !name) return toast('Enter code and your name');
+    await post(`/groups/by-invite/${code}/members`, {name});
+    const group = await get(`/groups/by-invite/${code}`);
+    localStorage.setItem('splitsmart_group_id', group.id);
+    STATE.group = group; toast(`Welcome to ${group.name}!`); renderGroup();
+  };
 }
 
-function renderGraphs(data) {
-  const members = data.members;
-  const saved = data.naive_transaction_count - data.transaction_count;
-  const pct = data.naive_transaction_count > 0 ? Math.round((saved / data.naive_transaction_count) * 100) : 0;
-
-  document.getElementById('graphBadge').innerHTML = saved > 0
-    ? `<span class="badge">⚡ ${pct}% fewer payments needed</span>`
-    : (members.length > 1 ? `<span class="badge">🎉 Already minimal — nothing to optimize</span>` : '');
-
-  drawGraph('graphBefore', members, data.naive_edges.map(e => ({from: e.from_id, to: e.to_id, amount: e.amount_rupees})));
-  drawGraph('graphAfter', members, data.transactions.map(t => ({from: t.payer_id, to: t.payee_id, amount: t.amount_rupees})));
+async function loadGroup(id){
+  try { STATE.group = await get(`/groups/${id}`); renderGroup(); }
+  catch { localStorage.removeItem('splitsmart_group_id'); renderHome(); }
 }
 
-function drawGraph(svgId, members, edges) {
-  const svg = document.getElementById(svgId);
-  const W = 280, H = 260, cx = W / 2, cy = H / 2 - 10, R = 85;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+// ---------- GROUP SHELL ----------
+function memberColor(id){ const m = STATE.group.members.find(x=>x.id===id); return m ? m.avatar_color : '#ccc'; }
+function memberName(id){ const m = STATE.group.members.find(x=>x.id===id); return m ? m.name : '?'; }
+function initials(n){ return n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
 
-  const n = members.length;
-  const pos = {};
-  members.forEach((m, i) => {
-    const angle = (2 * Math.PI * i) / n - Math.PI / 2;
-    pos[m.id] = { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle), name: m.name };
+function renderGroup(){
+  STATE.screen='group';
+  const g = STATE.group;
+  document.getElementById('app').innerHTML = `
+    <div class="topbar">
+      <div class="gemoji">${g.emoji}</div>
+      <div class="ginfo"><h2>${g.name}</h2>
+        <div class="avatars">${g.members.map(m=>`<span class="avatar" style="background:${m.avatar_color}" title="${m.name}">${initials(m.name)}</span>`).join('')}</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="switch-group">Switch</button>
+    </div>
+    <div class="invite-pill" id="invite-pill">🔗 Invite code: <b>${g.invite_code}</b> · tap to copy</div>
+    <div class="tabs" id="tabs">
+      ${[['expenses','🧾 Expenses'],['settle','🤝 Settle Up'],['insights','📊 Insights'],['budget','🎯 Budget'],['achievements','🏆 Badges']]
+        .map(([k,l])=>`<div class="tab ${STATE.tab===k?'active':''}" data-t="${k}">${l}</div>`).join('')}
+    </div>
+    <div id="tab-body"></div>
+    <button class="fab" id="fab-add">+</button>
+    <button class="chat-fab" id="chat-fab">🤖</button>
+  `;
+  document.getElementById('switch-group').onclick=()=>{ localStorage.removeItem('splitsmart_group_id'); renderHome(); };
+  document.getElementById('invite-pill').onclick=()=>{ navigator.clipboard?.writeText(g.invite_code); toast('Invite code copied!'); };
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ STATE.tab=t.dataset.t; renderGroup(); });
+  document.getElementById('fab-add').onclick=openAddExpense;
+  document.getElementById('chat-fab').onclick=openChat;
+  renderTab();
+}
+
+function renderTab(){
+  const body = document.getElementById('tab-body');
+  body.innerHTML = `<div class="empty">Loading…</div>`;
+  if (STATE.tab==='expenses') renderExpensesTab(body);
+  else if (STATE.tab==='settle') renderSettleTab(body);
+  else if (STATE.tab==='insights') renderInsightsTab(body);
+  else if (STATE.tab==='budget') renderBudgetTab(body);
+  else if (STATE.tab==='achievements') renderAchievementsTab(body);
+}
+
+// ---------- EXPENSES TAB ----------
+async function renderExpensesTab(body){
+  const g = STATE.group;
+  const qs = new URLSearchParams(STATE.expenseFilter).toString();
+  const expenses = await get(`/groups/${g.id}/expenses${qs?('?'+qs):''}`);
+  body.innerHTML = `
+    <div class="card">
+      <div class="search-row">
+        <input id="exp-search" placeholder="Search expenses…" value="${STATE.expenseFilter.q||''}">
+        <select id="exp-cat-filter">
+          <option value="">All categories</option>
+          ${['food','groceries','travel','transport','shopping','entertainment','utilities','other'].map(c=>`<option value="${c}" ${STATE.expenseFilter.category===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      ${expenses.length ? expenses.map(e=>`
+        <div class="expense-item">
+          <div class="exp-emoji">${e.category_emoji}</div>
+          <div class="exp-mid">
+            <div class="exp-desc">${e.description}</div>
+            <div class="exp-meta">${e.paid_by_name} paid · ${new Date(e.created_at).toLocaleDateString()}</div>
+          </div>
+          <div class="exp-amt">₹${e.amount_rupees.toFixed(2)}</div>
+          <div class="exp-actions">
+            <button data-edit="${e.id}">✏️</button>
+            <button data-del="${e.id}">🗑️</button>
+          </div>
+        </div>`).join('') : `<div class="empty">No expenses yet — tap + to add one, or try ✨ AI Smart Add.</div>`}
+    </div>
+  `;
+  document.getElementById('exp-search').oninput = debounce(e=>{ STATE.expenseFilter.q = e.target.value || undefined; renderTab(); }, 350);
+  document.getElementById('exp-cat-filter').onchange = e=>{ STATE.expenseFilter.category = e.target.value || undefined; renderTab(); };
+  body.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>openEditExpense(b.dataset.edit, expenses.find(x=>x.id===b.dataset.edit)));
+  body.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{
+    if(!confirm('Delete this expense?')) return;
+    await del(`/groups/${g.id}/expenses/${b.dataset.del}`); toast('Expense deleted'); renderTab();
   });
+}
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
 
-  let markerDefs = `
-    <defs>
-      <marker id="${svgId}-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
-        <path d="M0,0 L0,6 L7,3 z" fill="#c9c2e0"></path>
-      </marker>
-    </defs>`;
+// ---------- ADD / EDIT EXPENSE MODAL ----------
+function openAddExpense(){ openExpenseModal(null); }
+function openEditExpense(id, data){ openExpenseModal({id, ...data}); }
 
-  let edgeSvg = '';
-  edges.forEach(e => {
-    const a = pos[e.from], b = pos[e.to];
-    if (!a || !b) return;
-    const dx = b.x - a.x, dy = b.y - a.y;
-    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    const shrink = 18;
-    const x1 = a.x + (dx / dist) * shrink;
-    const y1 = a.y + (dy / dist) * shrink;
-    const x2 = b.x - (dx / dist) * shrink;
-    const y2 = b.y - (dy / dist) * shrink;
-    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-    edgeSvg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#c9c2e0" stroke-width="1.5" marker-end="url(#${svgId}-arrow)"></line>`;
-    edgeSvg += `<rect x="${mx - 16}" y="${my - 8}" width="32" height="14" rx="7" fill="white" opacity="0.9"></rect>`;
-    edgeSvg += `<text x="${mx}" y="${my + 3}" font-size="8" text-anchor="middle" fill="#8b8599" font-family="Nunito">₹${Math.round(e.amount)}</text>`;
+function openExpenseModal(existing){
+  const g = STATE.group;
+  const isEdit = !!existing;
+  const overlay = document.createElement('div'); overlay.className='overlay';
+  overlay.innerHTML = `
+    <div class="sheet">
+      <div class="sheet-head"><h3>${isEdit?'✏️ Edit expense':'Add an expense'}</h3><button class="close-x">✕</button></div>
+      ${isEdit ? '' : `
+      <div class="mode-toggle" id="mode-toggle">
+        <button class="active" data-m="ai">✨ AI Smart Add</button>
+        <button data-m="manual">Manual</button>
+      </div>`}
+      <div id="ai-mode">
+        <div class="field"><label>Describe it naturally</label>
+          <textarea id="ai-text" rows="3" placeholder="e.g. Dinner 1200, I paid, split with Asha and Ravi"></textarea>
+        </div>
+        <button class="btn btn-purple btn-block" id="ai-parse-btn">✨ Parse with AI</button>
+        <div id="ai-preview"></div>
+      </div>
+      <div id="manual-mode" class="hidden"></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.onclick = e=>{ if(e.target===overlay) overlay.remove(); };
+  overlay.querySelector('.close-x').onclick=()=>overlay.remove();
+
+  function manualForm(prefill){
+    const p = prefill || {description:'',amount_rupees:'',paid_by_member_id:g.members[0].id,split_among_member_ids:g.members.map(m=>m.id),category:'',notes:''};
+    return `
+      <div class="field"><label>Description</label><input id="m-desc" value="${p.description||''}"></div>
+      <div class="row">
+        <div class="field"><label>Amount (₹)</label><input id="m-amt" type="number" step="0.01" value="${p.amount_rupees||''}"></div>
+        <div class="field"><label>Category</label>
+          <select id="m-cat">${['','food','groceries','travel','transport','shopping','entertainment','utilities','other'].map(c=>`<option value="${c}" ${p.category===c?'selected':''}>${c||'auto-detect'}</option>`).join('')}</select>
+        </div>
+      </div>
+      <div class="field"><label>Paid by</label>
+        <select id="m-paidby">${g.members.map(m=>`<option value="${m.id}" ${p.paid_by_member_id===m.id?'selected':''}>${m.name}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>Split among</label>
+        <div class="member-toggle" id="m-split">${g.members.map(m=>`<span class="${(p.split_among_member_ids||[]).includes(m.id)?'sel':''}" data-id="${m.id}">${m.name}</span>`).join('')}</div>
+      </div>
+      <div class="field"><label>Notes (optional)</label><input id="m-notes" value="${p.notes||''}"></div>
+      <button class="btn btn-primary btn-block" id="m-save">${isEdit?'Save changes':'Add expense'}</button>
+    `;
+  }
+
+  function wireManual(prefill){
+    const mm = overlay.querySelector('#manual-mode');
+    mm.innerHTML = manualForm(prefill);
+    mm.querySelectorAll('#m-split span').forEach(s=>s.onclick=()=>s.classList.toggle('sel'));
+    mm.querySelector('#m-save').onclick = async ()=>{
+      const desc = mm.querySelector('#m-desc').value.trim();
+      const amt = parseFloat(mm.querySelector('#m-amt').value);
+      if (!desc || !amt) return toast('Add a description and amount');
+      const split_ids = [...mm.querySelectorAll('#m-split span.sel')].map(s=>s.dataset.id);
+      const payload = {
+        description: desc, amount_rupees: amt, category: mm.querySelector('#m-cat').value || null,
+        paid_by_member_id: mm.querySelector('#m-paidby').value,
+        split_among_member_ids: split_ids.length ? split_ids : null,
+        notes: mm.querySelector('#m-notes').value.trim() || null,
+      };
+      if (isEdit) await patch(`/groups/${g.id}/expenses/${existing.id}`, payload);
+      else await post(`/groups/${g.id}/expenses`, payload);
+      toast(isEdit?'Expense updated!':'Expense added!'); overlay.remove(); renderTab();
+    };
+  }
+
+  if (isEdit){
+    overlay.querySelector('#ai-mode').classList.add('hidden');
+    overlay.querySelector('#manual-mode').classList.remove('hidden');
+    wireManual({...existing, split_among_member_ids: null});
+  } else {
+    overlay.querySelector('#mode-toggle').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      overlay.querySelectorAll('#mode-toggle button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+      overlay.querySelector('#ai-mode').classList.toggle('hidden', b.dataset.m!=='ai');
+      overlay.querySelector('#manual-mode').classList.toggle('hidden', b.dataset.m!=='manual');
+      if (b.dataset.m==='manual' && !overlay.querySelector('#manual-mode').innerHTML) wireManual();
+    });
+    overlay.querySelector('#ai-parse-btn').onclick = async ()=>{
+      const text = overlay.querySelector('#ai-text').value.trim();
+      if (!text) return toast('Type what happened first');
+      const btn = overlay.querySelector('#ai-parse-btn'); btn.innerHTML='<span class="spin"></span> Parsing…'; btn.disabled=true;
+      try {
+        const r = await post(`/groups/${g.id}/ai/smart-parse`, {text});
+        overlay.querySelector('#ai-preview').innerHTML = `
+          <div class="parse-preview">
+            <div class="pv-row"><span>${r.category_emoji} ${r.description}</span><span>₹${r.amount_rupees.toFixed(2)}</span></div>
+            <div class="pv-row"><span class="muted">Paid by</span><span>${r.paid_by_name || 'not sure — pick below'}</span></div>
+            <div class="pv-row"><span class="muted">Category</span><span>${r.category}</span></div>
+            <div style="margin-top:.6rem"><span class="${r.ai_powered?'ai-badge':'ai-badge rule'}">${r.ai_powered?'✨ AI parsed':'⚡ Quick parsed'}</span></div>
+          </div>`;
+        overlay.querySelector('#manual-mode').classList.remove('hidden');
+        overlay.querySelectorAll('#mode-toggle button').forEach(x=>x.classList.remove('active'));
+        overlay.querySelector('[data-m="manual"]').classList.add('active');
+        overlay.querySelector('#ai-mode').classList.add('hidden');
+        wireManual({
+          description: r.description, amount_rupees: r.amount_rupees, category: r.category,
+          paid_by_member_id: r.paid_by_member_id || g.members[0].id,
+          split_among_member_ids: r.split_among_member_ids || g.members.map(m=>m.id),
+        });
+      } finally { btn.innerHTML='✨ Parse with AI'; btn.disabled=false; }
+    };
+  }
+}
+
+// ---------- SETTLE TAB ----------
+async function renderSettleTab(body){
+  const g = STATE.group;
+  const s = await get(`/groups/${g.id}/settlement`);
+  const saved = s.naive_transaction_count - s.transaction_count;
+  body.innerHTML = `
+    <div class="card">
+      <h3>🤝 Settle up</h3>
+      ${s.transactions.length ? `
+        ${s.transactions.map(t=>`
+          <div class="txn"><span class="avatar" style="background:${memberColor(t.payer_id)};width:26px;height:26px;font-size:.65rem">${initials(t.payer_name)}</span>
+          ${t.payer_name} <span class="arrow">→</span> ${t.payee_name} <span style="margin-left:auto">₹${t.amount_rupees.toFixed(2)}</span>
+          <button class="btn btn-teal btn-sm" data-pay='${JSON.stringify({from:t.payer_id,to:t.payee_id,amt:t.amount_rupees})}'>Mark paid</button></div>
+        `).join('')}
+        ${saved>0 ? `<div class="chip">🧮 SplitSmart saved ${saved} payment${saved!==1?'s':''} vs. paying everyone directly</div>` : ''}
+      ` : `<div class="empty">🎉 Everyone's settled up — no payments needed!</div>`}
+    </div>
+    <div class="card">
+      <h3>➕ Record a manual payment</h3>
+      <div class="row">
+        <div class="field"><label>From</label><select id="pay-from">${g.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select></div>
+        <div class="field"><label>To</label><select id="pay-to">${g.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label>Amount (₹)</label><input id="pay-amt" type="number" step="0.01"></div>
+      <button class="btn btn-purple btn-block" id="record-pay-btn">Record payment</button>
+    </div>
+  `;
+  body.querySelectorAll('[data-pay]').forEach(b=>b.onclick=async()=>{
+    const d = JSON.parse(b.dataset.pay);
+    await post(`/groups/${g.id}/payments`, {from_member_id:d.from, to_member_id:d.to, amount_rupees:d.amt});
+    toast('Payment recorded 🎉'); renderTab();
   });
+  document.getElementById('record-pay-btn').onclick = async ()=>{
+    const from = document.getElementById('pay-from').value, to = document.getElementById('pay-to').value;
+    const amt = parseFloat(document.getElementById('pay-amt').value);
+    if (from===to) return toast('Pick two different people');
+    if (!amt) return toast('Enter an amount');
+    await post(`/groups/${g.id}/payments`, {from_member_id:from, to_member_id:to, amount_rupees:amt});
+    toast('Payment recorded 🎉'); renderTab();
+  };
+}
 
-  let nodeSvg = '';
-  members.forEach(m => {
-    const p = pos[m.id];
-    const color = colorFor(m.name);
-    nodeSvg += `<circle cx="${p.x}" cy="${p.y}" r="16" fill="${color}"></circle>`;
-    nodeSvg += `<text x="${p.x}" y="${p.y + 4}" font-size="10" font-weight="700" text-anchor="middle" fill="white" font-family="Quicksand">${initials(m.name)}</text>`;
-  });
+// ---------- INSIGHTS TAB ----------
+async function renderInsightsTab(body){
+  const g = STATE.group;
+  const ins = await get(`/groups/${g.id}/insights`);
+  const maxVal = Math.max(1, ...ins.person_bars.map(p=>Math.max(p.paid_rupees,p.fair_share_rupees)));
+  const donutGrad = ins.category_breakdown.map((c,i)=>`${CAT_COLORS[i%7]} ${cumPct(ins.category_breakdown,i)}% ${cumPct(ins.category_breakdown,i+1)}%`).join(',');
+  body.innerHTML = `
+    <div class="recap-card">
+      <span class="${ins.recap_ai_powered?'ai-badge':'ai-badge rule'}" style="position:absolute;top:-9px;right:14px">${ins.recap_ai_powered?'✨ AI recap':'⚡ Recap'}</span>
+      ${ins.recap}
+    </div>
+    <div class="card">
+      <h3>💰 Who paid vs. fair share</h3>
+      ${ins.person_bars.map(p=>`
+        <div class="bar-row"><div class="bar-label">${p.name}</div>
+          <div style="flex:1">
+            <div class="bar-track" style="margin-bottom:3px"><div class="bar-fill paid" style="width:${p.paid_rupees/maxVal*100}%"></div></div>
+            <div class="bar-track"><div class="bar-fill owed" style="width:${p.fair_share_rupees/maxVal*100}%"></div></div>
+          </div>
+          <div class="bar-net ${p.net_rupees>=0?'pos':'neg'}">${p.net_rupees>=0?'+':''}₹${p.net_rupees.toFixed(0)}</div>
+        </div>`).join('')}
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem">🩷 paid &nbsp; 💜 fair share</div>
+    </div>
+    <div class="card">
+      <h3>🥧 Spending by category</h3>
+      ${ins.category_breakdown.length ? `
+      <div class="donut-wrap">
+        <div class="donut" style="background:conic-gradient(${donutGrad})"></div>
+        <div class="legend">${ins.category_breakdown.map((c,i)=>`<div class="legend-row"><span class="dot" style="background:${CAT_COLORS[i%7]}"></span>${c.emoji} ${c.category} — ${c.pct}%</div>`).join('')}</div>
+      </div>` : `<div class="empty">No spending yet</div>`}
+    </div>
+    ${ins.trend.length ? `
+    <div class="card">
+      <h3>📈 Weekly trend</h3>
+      <div class="trend-bars">${ins.trend.map(t=>`<div class="trend-bar" style="height:${Math.max(6, t.amount_rupees/Math.max(...ins.trend.map(x=>x.amount_rupees))*80)}px" title="${t.label}: ₹${t.amount_rupees.toFixed(0)}"></div>`).join('')}</div>
+    </div>` : ''}
+    <div class="card">
+      <h3>💡 Smart tips <span class="${ins.ai_powered?'ai-badge':'ai-badge rule'}">${ins.ai_powered?'✨ AI':'⚡ Rules'}</span></h3>
+      ${ins.tips.map(t=>`<div class="tip"><span class="ti">💬</span><span>${t}</span></div>`).join('')}
+    </div>
+  `;
+}
+function cumPct(arr,i){ let s=0; for(let j=0;j<i;j++) s+=arr[j].pct; return Math.min(100,s); }
 
-  svg.innerHTML = markerDefs + edgeSvg + nodeSvg;
+// ---------- BUDGET TAB ----------
+async function renderBudgetTab(body){
+  const g = STATE.group;
+  const b = await get(`/groups/${g.id}/budget`);
+  const pct = Math.min(100, b.pct_used);
+  const ringColor = pct>=100?'var(--danger)':pct>=80?'var(--accent3)':'var(--accent2)';
+  body.innerHTML = `
+    <div class="card">
+      <h3>🎯 Monthly budget</h3>
+      ${b.monthly_limit_rupees ? `
+        <div class="ring-wrap">
+          <div class="ring" style="background:conic-gradient(${ringColor} ${pct}%, var(--bg2) 0)">
+            <div class="ring-inner"><b>${pct}%</b><span>used</span></div>
+          </div>
+          <div>
+            <div style="font-family:'Quicksand',sans-serif;font-weight:800;font-size:1.1rem">₹${b.spent_this_month_rupees.toFixed(0)} / ₹${b.monthly_limit_rupees.toFixed(0)}</div>
+            <div class="muted" style="font-size:.8rem">spent this month</div>
+          </div>
+        </div>
+        <div class="recap-card" style="margin-top:1rem">
+          <span class="${b.ai_powered?'ai-badge':'ai-badge rule'}" style="position:absolute;top:-9px;right:14px">${b.ai_powered?'✨ AI':'⚡'}</span>
+          ${b.alert}
+        </div>
+      ` : `<div class="empty">No budget set yet</div>`}
+      <div class="field" style="margin-top:1rem"><label>Set monthly budget (₹)</label><input id="budget-input" type="number" value="${b.monthly_limit_rupees||''}"></div>
+      <button class="btn btn-amber btn-block" id="budget-save">Save budget</button>
+    </div>
+  `;
+  document.getElementById('budget-save').onclick = async ()=>{
+    const v = parseFloat(document.getElementById('budget-input').value);
+    if (!v) return toast('Enter a budget amount');
+    await post(`/groups/${g.id}/budget`, {monthly_limit_rupees:v});
+    toast('Budget saved!'); renderTab();
+  };
+}
+
+// ---------- ACHIEVEMENTS TAB ----------
+async function renderAchievementsTab(body){
+  const g = STATE.group;
+  const a = await get(`/groups/${g.id}/achievements`);
+  body.innerHTML = `<div class="card"><h3>🏆 Group badges</h3><div class="achieve-grid">
+    ${a.achievements.map(x=>`<div class="achieve"><div class="ae">${x.emoji}</div><div class="at">${x.title}</div><div class="ad">${x.description}</div></div>`).join('')}
+  </div></div>`;
+}
+
+// ---------- AI CHAT ----------
+function openChat(){
+  if (document.getElementById('chat-panel')) return;
+  const g = STATE.group;
+  const panel = document.createElement('div'); panel.id='chat-panel'; panel.className='chat-panel';
+  panel.innerHTML = `
+    <div class="chat-head"><h3>🤖 Ask SplitSmart</h3><button class="close-x" id="chat-close">✕</button></div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-suggest">
+      <span data-q="Who owes the most?">Who owes the most?</span>
+      <span data-q="What's the total spent?">Total spent?</span>
+      <span data-q="What category do we spend most on?">Top category?</span>
+    </div>
+    <div class="chat-input-row"><input id="chat-input" placeholder="Ask a question…"><button class="btn btn-purple" id="chat-send">Send</button></div>
+  `;
+  document.body.appendChild(panel);
+  document.getElementById('chat-close').onclick=()=>panel.remove();
+  renderChatMsgs();
+  panel.querySelectorAll('[data-q]').forEach(s=>s.onclick=()=>sendChat(s.dataset.q));
+  document.getElementById('chat-send').onclick=()=>{ const v=document.getElementById('chat-input').value.trim(); if(v) sendChat(v); };
+  document.getElementById('chat-input').onkeydown=e=>{ if(e.key==='Enter'){ const v=e.target.value.trim(); if(v) sendChat(v); } };
+}
+function renderChatMsgs(){
+  const box = document.getElementById('chat-msgs'); if(!box) return;
+  box.innerHTML = STATE.chatMsgs.map(m=>`<div class="msg ${m.role}">${m.text}</div>`).join('') || '<div class="empty">Ask me anything about this group\'s spending.</div>';
+  box.scrollTop = box.scrollHeight;
+}
+async function sendChat(q){
+  const g = STATE.group;
+  STATE.chatMsgs.push({role:'user', text:q}); renderChatMsgs();
+  document.getElementById('chat-input').value='';
+  STATE.chatMsgs.push({role:'bot', text:'<span class="spin"></span>'}); renderChatMsgs();
+  try {
+    const r = await post(`/groups/${g.id}/ai/chat`, {question:q});
+    STATE.chatMsgs.pop();
+    STATE.chatMsgs.push({role:'bot', text:(r.ai_powered?'✨ ':'⚡ ')+r.answer});
+  } catch { STATE.chatMsgs.pop(); STATE.chatMsgs.push({role:'bot', text:'Sorry, something went wrong.'}); }
+  renderChatMsgs();
 }
 </script>
 </body>
