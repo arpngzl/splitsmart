@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SplitSmart — Minimum-Transaction Expense Splitting</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #171a21;
+    --border: #262b36;
+    --text: #e8e9ec;
+    --muted: #8b93a3;
+    --accent: #5eead4;
+    --accent2: #f472b6;
+    --danger: #f87171;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  .wrap { width: 100%; max-width: 640px; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .sub { color: var(--muted); margin-bottom: 2rem; font-size: 0.9rem; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .card h2 { font-size: 1rem; margin: 0 0 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select {
+    background: #0d0f13;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+  }
+  label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+  button {
+    background: var(--accent);
+    color: #04201c;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  button:hover { opacity: 0.9; }
+  .member-tag {
+    display: inline-block;
+    background: #1e2330;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin: 0.15rem;
+    font-size: 0.85rem;
+  }
+  .txn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .txn:last-child { border-bottom: none; }
+  .txn .arrow { color: var(--accent); font-weight: 600; }
+  .txn .amount { color: var(--accent2); font-weight: 700; }
+  .stat-row { display: flex; gap: 1rem; margin-top: 0.75rem; }
+  .stat { flex: 1; background: #0d0f13; border-radius: 8px; padding: 0.75rem; text-align: center; }
+  .stat .n { font-size: 1.4rem; font-weight: 700; }
+  .stat .l { font-size: 0.75rem; color: var(--muted); }
+  .hidden { display: none; }
+  .expense-row { display: flex; gap: 0.5rem; }
+  .expense-row input { flex: 1; }
+  .invite { color: var(--accent); font-family: monospace; font-size: 1.1rem; }
+  .empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>SplitSmart</h1>
+  <p class="sub">Group expense splitting with minimum-transaction settlement</p>
+
+  <div class="card" id="createCard">
+    <h2>Create a group</h2>
+    <label>Group name</label>
+    <input id="groupName" placeholder="Goa Trip">
+    <label>Members (comma separated)</label>
+    <input id="memberNames" placeholder="Alice, Bob, Charlie">
+    <button onclick="createGroup()">Create group</button>
+  </div>
+
+  <div class="card hidden" id="groupCard">
+    <h2>Group</h2>
+    <div id="groupInfo"></div>
+    <div id="memberList" style="margin-top:0.5rem;"></div>
+  </div>
+
+  <div class="card hidden" id="expenseCard">
+    <h2>Add expense</h2>
+    <div class="expense-row">
+      <input id="expDesc" placeholder="Description (e.g. Hotel)">
+      <input id="expAmount" placeholder="Amount (₹)" type="number">
+    </div>
+    <label>Paid by</label>
+    <select id="expPaidBy"></select>
+    <button onclick="addExpense()">Add expense</button>
+  </div>
+
+  <div class="card hidden" id="settlementCard">
+    <h2>Settlement</h2>
+    <div id="settlementList"></div>
+    <div class="stat-row" id="statRow"></div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let currentGroup = null;
+
+async function createGroup() {
+  const name = document.getElementById('groupName').value.trim();
+  const namesRaw = document.getElementById('memberNames').value.trim();
+  if (!name || !namesRaw) return alert('Fill in group name and members');
+  const member_names = namesRaw.split(',').map(s => s.trim()).filter(Boolean);
+  if (member_names.length < 2) return alert('Add at least 2 members');
+
+  const res = await fetch(`${API}/groups`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name, member_names})
+  });
+  if (!res.ok) return alert('Failed to create group');
+  currentGroup = await res.json();
+  renderGroup();
+}
+
+function renderGroup() {
+  document.getElementById('groupCard').classList.remove('hidden');
+  document.getElementById('expenseCard').classList.remove('hidden');
+  document.getElementById('settlementCard').classList.remove('hidden');
+
+  document.getElementById('groupInfo').innerHTML =
+    `<strong>${currentGroup.name}</strong> — invite code: <span class="invite">${currentGroup.invite_code}</span>`;
+
+  document.getElementById('memberList').innerHTML =
+    currentGroup.members.map(m => `<span class="member-tag">${m.name}</span>`).join('');
+
+  const select = document.getElementById('expPaidBy');
+  select.innerHTML = currentGroup.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+
+  refreshSettlement();
+}
+
+async function addExpense() {
+  const description = document.getElementById('expDesc').value.trim();
+  const amount_rupees = parseFloat(document.getElementById('expAmount').value);
+  const paid_by_member_id = document.getElementById('expPaidBy').value;
+  if (!description || !amount_rupees) return alert('Fill in description and amount');
+
+  const res = await fetch(`${API}/groups/${currentGroup.id}/expenses`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({description, amount_rupees, paid_by_member_id})
+  });
+  if (!res.ok) return alert('Failed to add expense');
+
+  document.getElementById('expDesc').value = '';
+  document.getElementById('expAmount').value = '';
+  refreshSettlement();
+}
+
+async function refreshSettlement() {
+  const res = await fetch(`${API}/groups/${currentGroup.id}/settlement`);
+  const data = await res.json();
+
+  const list = document.getElementById('settlementList');
+  if (data.transactions.length === 0) {
+    list.innerHTML = '<div class="empty">All settled up 🎉</div>';
+  } else {
+    list.innerHTML = data.transactions.map(t => `
+      <div class="txn">
+        <span>${t.payer_name} <span class="arrow">→</span> ${t.payee_name}</span>
+        <span class="amount">₹${t.amount_rupees.toFixed(2)}</span>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('statRow').innerHTML = `
+    <div class="stat"><div class="n">${data.transaction_count}</div><div class="l">transactions needed</div></div>
+    <div class="stat"><div class="n">${data.naive_transaction_count}</div><div class="l">naive would need</div></div>
+  `;
+}
+</script>
+</body>
+</html>
