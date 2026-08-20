@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from app.database import engine, get_db
-from app import models, schemas
+from app import models, schemas, insights
 from app.settlement import settle_group
 
 models.Base.metadata.create_all(bind=engine)
@@ -79,11 +79,13 @@ def add_expense(group_id: str, payload: schemas.ExpenseCreate, db: Session = Dep
         raise HTTPException(status_code=400, detail=f"Unknown member ids: {invalid}")
 
     amount_minor = to_minor(payload.amount_rupees)
+    category = payload.category or insights.categorize(payload.description)
 
     expense = models.Expense(
         group_id=group_id,
         description=payload.description,
         amount=amount_minor,
+        category=category,
         paid_by_member_id=payload.paid_by_member_id,
     )
     db.add(expense)
@@ -106,7 +108,33 @@ def add_expense(group_id: str, payload: schemas.ExpenseCreate, db: Session = Dep
         description=expense.description,
         amount_rupees=to_rupees(expense.amount),
         paid_by_member_id=expense.paid_by_member_id,
+        category=expense.category,
+        category_emoji=insights.emoji_for(expense.category),
     )
+
+
+@app.get("/groups/{group_id}/expenses", response_model=list[schemas.ExpenseListItem])
+def list_expenses(group_id: str, db: Session = Depends(get_db)):
+    group = db.get(models.Group, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    members_by_id = {m.id: m for m in group.members}
+    ordered = sorted(group.expenses, key=lambda e: e.created_at, reverse=True)
+
+    return [
+        schemas.ExpenseListItem(
+            id=e.id,
+            description=e.description,
+            amount_rupees=to_rupees(e.amount),
+            category=e.category,
+            category_emoji=insights.emoji_for(e.category),
+            paid_by_member_id=e.paid_by_member_id,
+            paid_by_name=members_by_id[e.paid_by_member_id].name,
+            created_at=e.created_at.isoformat() if e.created_at else "",
+        )
+        for e in ordered
+    ]
 
 
 @app.get("/groups/{group_id}/settlement", response_model=schemas.SettlementResponse)
@@ -172,6 +200,62 @@ def get_settlement(group_id: str, db: Session = Depends(get_db)):
         naive_transaction_count=naive_count,
         naive_edges=naive_edges_out,
         members=[schemas.MemberOut(id=m.id, name=m.name) for m in group.members],
+    )
+
+
+@app.get("/groups/{group_id}/insights", response_model=schemas.InsightsResponse)
+def get_insights(group_id: str, db: Session = Depends(get_db)):
+    group = db.get(models.Group, group_id)
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    members_by_id = {m.id: m for m in group.members}
+    paid: dict[str, int] = {m.id: 0 for m in group.members}
+    owed: dict[str, int] = {m.id: 0 for m in group.members}
+
+    for expense in group.expenses:
+        paid[expense.paid_by_member_id] += expense.amount
+        for split in expense.splits:
+            owed[split.member_id] += split.share_amount
+
+    transactions = settle_group(paid, owed)
+
+    result = insights.build_insights(
+        group_name=group.name,
+        members_by_id=members_by_id,
+        paid=paid,
+        owed=owed,
+        transactions=transactions,
+        expenses=group.expenses,
+    )
+
+    person_bars = [
+        schemas.PersonBar(
+            member_id=m.id,
+            name=m.name,
+            paid_rupees=to_rupees(paid[m.id]),
+            fair_share_rupees=to_rupees(owed[m.id]),
+            net_rupees=to_rupees(paid[m.id] - owed[m.id]),
+        )
+        for m in group.members
+    ]
+
+    category_breakdown = [
+        schemas.CategoryBreakdownItem(
+            category=row["category"],
+            emoji=row["emoji"],
+            amount_rupees=to_rupees(row["amount_minor"]),
+            pct=row["pct"],
+        )
+        for row in result["category_breakdown"]
+    ]
+
+    return schemas.InsightsResponse(
+        group_id=group_id,
+        person_bars=person_bars,
+        category_breakdown=category_breakdown,
+        tips=result["tips"],
+        ai_powered=result["ai_powered"],
     )
 
 

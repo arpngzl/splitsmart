@@ -180,6 +180,70 @@
   }
   .graph-col.after h3 { color: var(--accent2); }
   svg.graph { width: 100%; max-width: 280px; height: 260px; }
+
+  /* --- new: insights, bar charts, expense history --- */
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: linear-gradient(90deg, var(--accent4), #7d6cf0);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.72rem;
+    font-family: 'Quicksand', sans-serif;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .ai-badge.rule { background: linear-gradient(90deg, var(--accent2), #4fc3a1); }
+  .tip-list { list-style: none; margin: 0; padding: 0; }
+  .tip-list li {
+    background: #faf9fd;
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .tip-list li::before { content: '💡'; flex-shrink: 0; }
+  .bar-person { margin-bottom: 1.1rem; }
+  .bar-person:last-child { margin-bottom: 0; }
+  .bar-person-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+  .bar-person-head strong { font-size: 0.9rem; }
+  .bar-net { margin-left: auto; font-size: 0.8rem; font-weight: 800; font-family: 'Quicksand', sans-serif; }
+  .bar-net.pos { color: var(--accent2); }
+  .bar-net.neg { color: var(--accent); }
+  .bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .bar-label { width: 68px; font-size: 0.72rem; color: var(--muted); font-weight: 700; flex-shrink: 0; }
+  .bar-track { flex: 1; background: #f0eef7; border-radius: 999px; height: 10px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; transition: width 0.3s ease; }
+  .bar-fill.paid { background: linear-gradient(90deg, var(--accent), #ff6f91); }
+  .bar-fill.share { background: linear-gradient(90deg, var(--accent4), #7d6cf0); }
+  .bar-val { width: 68px; text-align: right; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+  .cat-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+  .cat-row:last-child { margin-bottom: 0; }
+  .cat-emoji { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+  .cat-name { width: 92px; font-size: 0.82rem; font-weight: 700; flex-shrink: 0; text-transform: capitalize; }
+  .cat-track { flex: 1; background: #f0eef7; border-radius: 999px; height: 12px; overflow: hidden; }
+  .cat-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent3), #ffb84d); }
+  .cat-val { width: 78px; text-align: right; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+  .expense-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 0.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .expense-item:last-child { border-bottom: none; }
+  .expense-item .cat-emoji { font-size: 1.3rem; }
+  .expense-item .exp-desc { font-weight: 700; font-size: 0.9rem; }
+  .expense-item .exp-meta { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+  .expense-item .exp-amount { margin-left: auto; font-weight: 800; font-family: 'Quicksand', sans-serif; }
 </style>
 </head>
 <body>
@@ -233,6 +297,27 @@
       </div>
     </div>
   </div>
+
+  <div class="card hidden" id="insightsCard">
+    <h2>🧠 Smart insights</h2>
+    <div id="insightsBadge"></div>
+    <ul class="tip-list" id="tipList"></ul>
+  </div>
+
+  <div class="card hidden" id="barsCard">
+    <h2>📊 Who's paid what</h2>
+    <div id="personBars"></div>
+  </div>
+
+  <div class="card hidden" id="categoryCard">
+    <h2>🍕 Spending by category</h2>
+    <div id="categoryBars"></div>
+  </div>
+
+  <div class="card hidden" id="historyCard">
+    <h2>📜 Expense history</h2>
+    <div id="expenseHistory"></div>
+  </div>
 </div>
 
 <script>
@@ -273,6 +358,10 @@ function renderGroup() {
   document.getElementById('expenseCard').classList.remove('hidden');
   document.getElementById('settlementCard').classList.remove('hidden');
   document.getElementById('graphCard').classList.remove('hidden');
+  document.getElementById('insightsCard').classList.remove('hidden');
+  document.getElementById('barsCard').classList.remove('hidden');
+  document.getElementById('categoryCard').classList.remove('hidden');
+  document.getElementById('historyCard').classList.remove('hidden');
 
   document.getElementById('groupInfo').innerHTML =
     `<strong>${currentGroup.name}</strong> · invite code <span class="invite">${currentGroup.invite_code}</span>`;
@@ -289,6 +378,8 @@ function renderGroup() {
   select.innerHTML = currentGroup.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
 
   refreshSettlement();
+  refreshExpenseHistory();
+  refreshInsights();
 }
 
 async function addExpense() {
@@ -307,6 +398,77 @@ async function addExpense() {
   document.getElementById('expDesc').value = '';
   document.getElementById('expAmount').value = '';
   refreshSettlement();
+  refreshExpenseHistory();
+  refreshInsights();
+}
+
+async function refreshExpenseHistory() {
+  const res = await fetch(`${API}/groups/${currentGroup.id}/expenses`);
+  const expenses = await res.json();
+  const el = document.getElementById('expenseHistory');
+
+  if (expenses.length === 0) {
+    el.innerHTML = '<div class="empty">No expenses yet — add your first one above.</div>';
+    return;
+  }
+
+  el.innerHTML = expenses.map(e => `
+    <div class="expense-item">
+      <span class="cat-emoji">${e.category_emoji}</span>
+      <div>
+        <div class="exp-desc">${e.description}</div>
+        <div class="exp-meta">${e.paid_by_name} paid · ${e.category}</div>
+      </div>
+      <span class="exp-amount">₹${e.amount_rupees.toFixed(2)}</span>
+    </div>
+  `).join('');
+}
+
+async function refreshInsights() {
+  const res = await fetch(`${API}/groups/${currentGroup.id}/insights`);
+  const data = await res.json();
+
+  document.getElementById('insightsBadge').innerHTML = data.ai_powered
+    ? `<span class="ai-badge">✨ AI-powered</span>`
+    : `<span class="ai-badge rule">🧮 Smart insights</span>`;
+
+  document.getElementById('tipList').innerHTML =
+    data.tips.map(t => `<li>${t}</li>`).join('');
+
+  const maxBar = Math.max(1, ...data.person_bars.flatMap(b => [b.paid_rupees, b.fair_share_rupees]));
+  document.getElementById('personBars').innerHTML = data.person_bars.map(b => `
+    <div class="bar-person">
+      <div class="bar-person-head">
+        <span class="avatar" style="background:${colorFor(b.name)}">${initials(b.name)}</span>
+        <strong>${b.name}</strong>
+        <span class="bar-net ${b.net_rupees >= 0 ? 'pos' : 'neg'}">${b.net_rupees >= 0 ? '+' : ''}₹${b.net_rupees.toFixed(2)}</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Paid</span>
+        <div class="bar-track"><div class="bar-fill paid" style="width:${(b.paid_rupees / maxBar) * 100}%"></div></div>
+        <span class="bar-val">₹${b.paid_rupees.toFixed(2)}</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Fair share</span>
+        <div class="bar-track"><div class="bar-fill share" style="width:${(b.fair_share_rupees / maxBar) * 100}%"></div></div>
+        <span class="bar-val">₹${b.fair_share_rupees.toFixed(2)}</span>
+      </div>
+    </div>
+  `).join('');
+
+  const catEl = document.getElementById('categoryBars');
+  if (data.category_breakdown.length === 0) {
+    catEl.innerHTML = '<div class="empty">No expenses yet.</div>';
+  } else {
+    catEl.innerHTML = data.category_breakdown.map(c => `
+      <div class="cat-row">
+        <span class="cat-emoji">${c.emoji}</span>
+        <span class="cat-name">${c.category}</span>
+        <div class="cat-track"><div class="cat-fill" style="width:${c.pct}%"></div></div>
+        <span class="cat-val">₹${c.amount_rupees.toFixed(2)} · ${c.pct}%</span>
+      </div>
+    `).join('');
+  }
 }
 
 async function refreshSettlement() {

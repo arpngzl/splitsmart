@@ -3,3 +3,7 @@ uvicorn[standard]==0.30.6
 sqlalchemy==2.0.35
 pydantic==2.9.2
 pytest==8.3.3
+
+# Optional: only needed if you set ANTHROPIC_API_KEY to enable the
+# AI-sharpened insights tips (app runs fine without it — see app/insights.py)
+anthropic==0.39.0

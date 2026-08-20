@@ -42,6 +42,7 @@ class Expense(Base):
     group_id = Column(String, ForeignKey("groups.id"), nullable=False)
     description = Column(String, nullable=False)
     amount = Column(Integer, nullable=False)  # minor units (paise)
+    category = Column(String, nullable=False, default="other")
     paid_by_member_id = Column(String, ForeignKey("members.id"), nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
