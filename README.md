@@ -3,7 +3,7 @@
 Group expense splitting that settles debts using the **minimum possible number
 of transactions**, instead of logging a separate debt for every expense.
 
-Live demo: _add your deployed link here_
+Live demo: https://splitsmart-ot03.onrender.com
 
 ## The problem
 
