@@ -4,24 +4,21 @@ from pydantic import BaseModel, Field
 class GroupCreate(BaseModel):
     name: str
     member_names: list[str] = Field(..., min_length=1)
-    emoji: str | None = None
-
-
-class MemberOut(BaseModel):
-    id: str
-    name: str
-    avatar_color: str
-
-    class Config:
-        from_attributes = True
 
 
 class GroupOut(BaseModel):
     id: str
     name: str
-    emoji: str
     invite_code: str
-    members: list[MemberOut]
+    members: list["MemberOut"]
+
+    class Config:
+        from_attributes = True
+
+
+class MemberOut(BaseModel):
+    id: str
+    name: str
 
     class Config:
         from_attributes = True
@@ -33,20 +30,10 @@ class MemberAdd(BaseModel):
 
 class ExpenseCreate(BaseModel):
     description: str
-    amount_rupees: float
+    amount_rupees: float  # convenience: user-facing amount in rupees
     paid_by_member_id: str
-    split_among_member_ids: list[str] | None = None
-    category: str | None = None
-    notes: str | None = None
-
-
-class ExpenseUpdate(BaseModel):
-    description: str | None = None
-    amount_rupees: float | None = None
-    paid_by_member_id: str | None = None
-    split_among_member_ids: list[str] | None = None
-    category: str | None = None
-    notes: str | None = None
+    split_among_member_ids: list[str] | None = None  # None = split among all members
+    category: str | None = None  # None = auto-detected from description
 
 
 class ExpenseOut(BaseModel):
@@ -56,7 +43,6 @@ class ExpenseOut(BaseModel):
     paid_by_member_id: str
     category: str
     category_emoji: str
-    notes: str | None = None
 
     class Config:
         from_attributes = True
@@ -70,7 +56,6 @@ class ExpenseListItem(BaseModel):
     category_emoji: str
     paid_by_member_id: str
     paid_by_name: str
-    notes: str | None = None
     created_at: str
 
 
@@ -96,7 +81,7 @@ class SettlementResponse(BaseModel):
     transaction_count: int
     naive_transaction_count: int
     naive_edges: list[GraphEdge]
-    members: list[MemberOut]
+    members: list["MemberOut"]
 
 
 class PersonBar(BaseModel):
@@ -104,7 +89,7 @@ class PersonBar(BaseModel):
     name: str
     paid_rupees: float
     fair_share_rupees: float
-    net_rupees: float
+    net_rupees: float  # positive = owed money, negative = owes money
 
 
 class CategoryBreakdownItem(BaseModel):
@@ -114,82 +99,22 @@ class CategoryBreakdownItem(BaseModel):
     pct: int
 
 
-class TrendPoint(BaseModel):
-    label: str
-    amount_rupees: float
-
-
 class InsightsResponse(BaseModel):
     group_id: str
     person_bars: list[PersonBar]
     category_breakdown: list[CategoryBreakdownItem]
     tips: list[str]
     ai_powered: bool
-    total_spent_rupees: float
-    trend: list[TrendPoint]
-    recap: str
-    recap_ai_powered: bool
 
 
-class PaymentCreate(BaseModel):
-    from_member_id: str
-    to_member_id: str
-    amount_rupees: float
-    note: str | None = None
+class ReceiptScanRequest(BaseModel):
+    image_base64: str  # raw base64 image bytes, no data: URL prefix
+    media_type: str = "image/jpeg"
 
 
-class PaymentOut(BaseModel):
-    id: str
-    from_member_id: str
-    from_name: str
-    to_member_id: str
-    to_name: str
-    amount_rupees: float
-    note: str | None = None
-    created_at: str
-
-
-class BudgetSet(BaseModel):
-    monthly_limit_rupees: float
-
-
-class BudgetStatus(BaseModel):
-    monthly_limit_rupees: float | None
-    spent_this_month_rupees: float
-    pct_used: int
-    alert: str | None
-    ai_powered: bool
-
-
-class SmartParseRequest(BaseModel):
-    text: str
-
-
-class SmartParseResult(BaseModel):
+class ReceiptScanResponse(BaseModel):
     description: str
     amount_rupees: float
-    paid_by_member_id: str | None
-    paid_by_name: str | None
-    split_among_member_ids: list[str] | None
-    category: str | None
-    category_emoji: str | None
-    ai_powered: bool
-
-
-class ChatRequest(BaseModel):
-    question: str
-
-
-class ChatResponse(BaseModel):
-    answer: str
-    ai_powered: bool
-
-
-class Achievement(BaseModel):
-    emoji: str
-    title: str
-    description: str
-
-
-class AchievementsResponse(BaseModel):
-    achievements: list[Achievement]
+    category: str
+    category_emoji: str
+    merchant: str | None = None
